@@ -479,21 +479,25 @@ with tab_benchmark:
     }
     df_models = pd.DataFrame(models_data)
 
-    # 1. Multi-Algorithm Bar Chart (px.bar)
-    fig_bench = px.bar(
-        df_models,
-        x='Algorithm',
-        y=['Accuracy', 'Precision', 'Recall', 'ROC-AUC'],
+    # 1. Multi-Algorithm Bar Chart (go.Figure)
+    fig_bench = go.Figure()
+    metrics = ['Accuracy', 'Precision', 'Recall', 'ROC-AUC']
+    metric_colors = ['#2563eb', '#10b981', '#f59e0b', '#8b5cf6']
+    for m_col, m_color in zip(metrics, metric_colors):
+        fig_bench.add_trace(go.Bar(
+            name=m_col,
+            x=df_models['Algorithm'],
+            y=df_models[m_col],
+            marker_color=m_color
+        ))
+    fig_bench.update_layout(
         barmode='group',
         title="Multi-Algorithm Performance Comparison (%)",
-        color_discrete_sequence=['#2563eb', '#10b981', '#f59e0b', '#8b5cf6'],
-        template="plotly_dark"
-    )
-    fig_bench.update_layout(
         height=420,
         paper_bgcolor='rgba(0,0,0,0)',
         plot_bgcolor='rgba(15,23,42,0.6)',
-        font=dict(family="Outfit")
+        font=dict(family="Outfit", color="#e2e8f0"),
+        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
     )
     st.plotly_chart(fig_bench, use_container_width=True)
 
