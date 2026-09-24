@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "name": "loanguard-ai",
+  "cleanUrls": true,
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "week 4/frontend/$1"
+    }
+  ]
+}

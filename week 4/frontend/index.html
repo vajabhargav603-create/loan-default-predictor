@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Loan Predictor | Loan Default Risk Assessment</title>
+  <meta name="description" content="Machine Learning Web Application for predicting loan defaults based on borrower credit profiles, demographics, and loan particulars.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Roboto:wght@400;500;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Top Navigation Header -->
+  <header class="navbar">
+    <div class="nav-container">
+      <div class="brand">
+        <div class="brand-icon">
+          <i class="fa-solid fa-chart-line"></i>
+        </div>
+        <div class="brand-text">
+          <span class="brand-title">Loan Predictor</span>
+          <span class="brand-subtitle">ML Lab • Loan Default Risk Engine</span>
+        </div>
+      </div>
+
+      <nav class="nav-links">
+        <button class="nav-tab active" data-tab="tab-predictor" id="nav-tab-predictor">
+          <i class="fa-solid fa-calculator"></i> Predictor
+        </button>
+        <button class="nav-tab" data-tab="tab-eda" id="nav-tab-eda">
+          <i class="fa-solid fa-chart-pie"></i> Data Insights (EDA)
+        </button>
+      </nav>
+
+      <div class="server-status" id="server-status">
+        <span class="status-dot"></span>
+        <span class="status-text" id="status-text">Connecting...</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="main-content">
+
+    <!-- TAB 1: PREDICTOR -->
+    <section class="tab-pane active" id="tab-predictor">
+      <!-- Hero Banner -->
+      <div class="hero-card">
+        <div class="hero-left">
+          <span class="hero-badge"><i class="fa-solid fa-bolt"></i> Real-Time Risk Engine</span>
+          <h1>Loan Default Risk Assessment</h1>
+          <p>
+            Assess borrower default likelihood using a trained Machine Learning model. 
+            Enter custom loan parameters, select risk presets, or click <strong>Fill Random Values</strong> to test with dataset distributions.
+          </p>
+        </div>
+        <div class="hero-quick-stats">
+          <div class="quick-stat-box">
+            <span class="stat-value">16</span>
+            <span class="stat-label">Input Features</span>
+          </div>
+          <div class="quick-stat-box">
+            <span class="stat-value">Instant</span>
+            <span class="stat-label">Prediction</span>
+          </div>
+          <div class="quick-stat-box">
+            <span class="stat-value">255k+</span>
+            <span class="stat-label">Dataset Records</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action & Presets Bar -->
+      <div class="action-bar">
+        <div class="action-group">
+          <button class="btn btn-random" id="btn-random-values">
+            <i class="fa-solid fa-dice"></i> 🎲 Fill Random Values
+          </button>
+          <span class="action-divider"></span>
+          <span class="preset-label">Presets:</span>
+          <button class="btn btn-preset" id="btn-preset-low">
+            <i class="fa-solid fa-circle-check text-success"></i> Low Risk
+          </button>
+          <button class="btn btn-preset" id="btn-preset-high">
+            <i class="fa-solid fa-triangle-exclamation text-danger"></i> High Risk
+          </button>
+          <button class="btn btn-preset" id="btn-preset-avg">
+            <i class="fa-solid fa-scale-balanced text-warning"></i> Average
+          </button>
+        </div>
+        <div class="action-group">
+          <button class="btn btn-reset" id="btn-reset-form">
+            <i class="fa-solid fa-arrow-rotate-left"></i> Reset
+          </button>
+        </div>
+      </div>
+
+      <!-- Predictor Grid -->
+      <div class="predictor-grid">
+        <!-- Left: Form -->
+        <div class="form-column">
+          <form id="loan-form" class="loan-form" novalidate>
+
+            <!-- Card 1: Demographics -->
+            <div class="card form-card">
+              <div class="card-header">
+                <i class="fa-solid fa-user-tie"></i>
+                <div>
+                  <h3>1. Personal & Demographics</h3>
+                  <p class="section-desc">Borrower age, education, and household structure</p>
+                </div>
+              </div>
+              <div class="form-grid">
+                <div class="form-group">
+                  <label for="input-age">Age (Years)</label>
+                  <div class="input-wrap">
+                    <i class="fa-regular fa-calendar input-icon"></i>
+                    <input type="number" id="input-age" name="Age" min="18" max="99" value="42" required>
+                  </div>
+                  <span class="field-hint">Range: 18 - 69</span>
+                </div>
+
+                <div class="form-group">
+                  <label for="input-education">Education Level</label>
+                  <div class="input-wrap">
+                    <i class="fa-solid fa-graduation-cap input-icon"></i>
+                    <select id="input-education" name="Education" required>
+                      <option value="Bachelor's" selected>Bachelor's</option>
+                      <option value="High School">High School</option>
+                      <option value="Master's">Master's</option>
+                      <option value="PhD">PhD</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="input-marital">Marital Status</label>
+                  <div class="input-wrap">
+                    <i class="fa-solid fa-heart input-icon"></i>
+                    <select id="input-marital" name="MaritalStatus" required>
+                      <option value="Married" selected>Married</option>
+                      <option value="Single">Single</option>
+                      <option value="Divorced">Divorced</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="input-dependents">Has Dependents</label>
+                  <div class="input-wrap">
+                    <i class="fa-solid fa-children input-icon"></i>
+                    <select id="input-dependents" name="HasDependents" required>
+                      <option value="No" selected>No</option>
+                      <option value="Yes">Yes</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card 2: Employment & Income -->
+            <div class="card form-card">
+              <div class="card-header">
+                <i class="fa-solid fa-briefcase"></i>
+                <div>
+                  <h3>2. Employment & Income</h3>
+                  <p class="section-desc">Annual earning, career stability, and work history</p>
+                </div>
+              </div>
+              <div class="form-grid">
+                <div class="form-group">
+                  <label for="input-income">Annual Income ($)</label>
+                  <div class="input-wrap">
+                    <i class="fa-solid fa-dollar-sign input-icon"></i>
+                    <input type="number" id="input-income" name="Income" min="5000" max="1000000" step="500" value="82500" required>
+                  </div>
+                  <span class="field-hint">Dataset Mean: ~$82,500</span>
+                </div>
+
+                <div class="form-group">
+                  <label for="input-employment">Employment Type</label>
+                  <div class="input-wrap">
+                    <i class="fa-solid fa-building-user input-icon"></i>
+                    <select id="input-employment" name="EmploymentType" required>
+                      <option value="Full-time" selected>Full-time</option>
+                      <option value="Part-time">Part-time</option>
+                      <option value="Self-employed">Self-employed</option>
+                      <option value="Unemployed">Unemployed</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="form-group full-width">
+                  <label for="input-months-employed">
+                    Months Employed: <strong id="val-months-employed">60</strong> months (<span id="val-years-employed">5.0</span> years)
+                  </label>
+                  <input type="range" id="input-months-employed" name="MonthsEmployed" min="0" max="120" value="60" class="slider">
+                  <div class="slider-labels">
+                    <span>0 mos</span>
+                    <span>30 mos</span>
+                    <span>60 mos</span>
+                    <span>90 mos</span>
+                    <span>120 mos</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card 3: Credit Profile -->
+            <div class="card form-card">
+              <div class="card-header">
+                <i class="fa-solid fa-credit-card"></i>
+                <div>
+                  <h3>3. Credit & Financial Profile</h3>
+                  <p class="section-desc">Credit bureau score, open credit lines, and debt ratio</p>
+                </div>
+              </div>
+              <div class="form-grid">
+                <div class="form-group">
+                  <label for="input-credit-score">
+                    Credit Score (FICO): <strong id="val-credit-score">650</strong>
+                  </label>
+                  <div class="input-wrap">
+                    <i class="fa-solid fa-gauge-high input-icon"></i>
+                    <input type="number" id="input-credit-score" name="CreditScore" min="300" max="850" value="650" required>
+                  </div>
+                  <span class="field-hint" id="badge-credit-tier">Good (650)</span>
+                </div>
+
+                <div class="form-group">
+                  <label for="input-credit-lines">Number of Credit Lines</label>
+                  <div class="input-wrap">
+                    <i class="fa-solid fa-layer-group input-icon"></i>
+                    <select id="input-credit-lines" name="NumCreditLines" required>
+                      <option value="1">1 Line</option>
+                      <option value="2" selected>2 Lines</option>
+                      <option value="3">3 Lines</option>
+                      <option value="4">4 Lines</option>
+                    </select>
+                  </div>
+                  <span class="field-hint">Active credit lines</span>
+                </div>
+
+                <div class="form-group full-width">
+                  <label for="input-dti">
+                    Debt-to-Income (DTI) Ratio: <strong id="val-dti">0.40</strong> (<span id="val-dti-pct">40%</span>)
+                  </label>
+                  <input type="range" id="input-dti" name="DTIRatio" min="0.10" max="0.90" step="0.01" value="0.40" class="slider">
+                  <div class="slider-labels">
+                    <span>0.10 (Low Debt)</span>
+                    <span>0.35 (Healthy)</span>
+                    <span>0.50 (Average)</span>
+                    <span>0.70 (High)</span>
+                    <span>0.90 (Critical)</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card 4: Loan Particulars -->
+            <div class="card form-card">
+              <div class="card-header">
+                <i class="fa-solid fa-file-invoice-dollar"></i>
+                <div>
+                  <h3>4. Loan Particulars & Guarantee</h3>
+                  <p class="section-desc">Requested loan amount, term, rate, purpose, and collateral</p>
+                </div>
+              </div>
+              <div class="form-grid">
+                <div class="form-group">
+                  <label for="input-loan-amount">Loan Amount ($)</label>
+                  <div class="input-wrap">
+                    <i class="fa-solid fa-money-bill-wave input-icon"></i>
+                    <input type="number" id="input-loan-amount" name="LoanAmount" min="5000" max="250000" step="1000" value="120000" required>
+                  </div>
+                  <span class="field-hint">Range: $5,000 - $250,000</span>
+                </div>
+
+                <div class="form-group">
+                  <label for="input-interest-rate">Interest Rate (%)</label>
+                  <div class="input-wrap">
+                    <i class="fa-solid fa-percent input-icon"></i>
+                    <input type="number" id="input-interest-rate" name="InterestRate" min="2.0" max="30.0" step="0.1" value="12.5" required>
+                  </div>
+                  <span class="field-hint">Annual percentage rate</span>
+                </div>
+
+                <div class="form-group">
+                  <label for="input-loan-term">Loan Term</label>
+                  <div class="input-wrap">
+                    <i class="fa-solid fa-clock-rotate-left input-icon"></i>
+                    <select id="input-loan-term" name="LoanTerm" required>
+                      <option value="12">12 Months (1 Year)</option>
+                      <option value="24">24 Months (2 Years)</option>
+                      <option value="36" selected>36 Months (3 Years)</option>
+                      <option value="48">48 Months (4 Years)</option>
+                      <option value="60">60 Months (5 Years)</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="input-purpose">Loan Purpose</label>
+                  <div class="input-wrap">
+                    <i class="fa-solid fa-tag input-icon"></i>
+                    <select id="input-purpose" name="LoanPurpose" required>
+                      <option value="Home" selected>Home</option>
+                      <option value="Business">Business</option>
+                      <option value="Auto">Auto</option>
+                      <option value="Education">Education</option>
+                      <option value="Other">Other</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="input-mortgage">Has Existing Mortgage</label>
+                  <div class="input-wrap">
+                    <i class="fa-solid fa-house-circle-check input-icon"></i>
+                    <select id="input-mortgage" name="HasMortgage" required>
+                      <option value="No">No</option>
+                      <option value="Yes" selected>Yes</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="input-cosigner">Has Co-Signer</label>
+                  <div class="input-wrap">
+                    <i class="fa-solid fa-user-shield input-icon"></i>
+                    <select id="input-cosigner" name="HasCoSigner" required>
+                      <option value="No">No</option>
+                      <option value="Yes" selected>Yes (Joint Guarantee)</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary btn-submit" id="btn-submit">
+                <i class="fa-solid fa-chart-line"></i> Predict Loan Default Risk
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Right: Prediction Results Column -->
+        <div class="results-column">
+          <div class="card result-card sticky-card" id="result-card">
+            
+            <!-- Result Initial / Placeholder State -->
+            <div class="result-placeholder" id="result-placeholder">
+              <div class="pulse-icon">
+                <i class="fa-solid fa-wand-magic-sparkles"></i>
+              </div>
+              <h3>Ready to Predict</h3>
+              <p>Fill out borrower particulars or click <strong>🎲 Fill Random Values</strong> above, then submit to analyze default risk.</p>
+            </div>
+
+            <!-- Result Loading State -->
+            <div class="result-loading" id="result-loading" style="display: none;">
+              <div class="spinner"></div>
+              <h4>Analyzing Applicant Risk...</h4>
+              <p>Passing features through preprocessing pipeline & ML model</p>
+            </div>
+
+            <!-- Result Content State -->
+            <div class="result-content" id="result-content" style="display: none;">
+              
+              <!-- Verdict Badge Header -->
+              <div class="verdict-banner" id="verdict-banner">
+                <div class="verdict-icon" id="verdict-icon">
+                  <i class="fa-solid fa-circle-check"></i>
+                </div>
+                <div class="verdict-text">
+                  <span class="verdict-tier" id="verdict-tier">LOW RISK</span>
+                  <h2 class="verdict-title" id="verdict-title">Approval Recommended</h2>
+                  <p class="verdict-desc" id="verdict-desc">Applicant demonstrates strong financial indicators and low default probability.</p>
+                </div>
+              </div>
+
+              <!-- Probability Gauge & Bar -->
+              <div class="prob-section">
+                <div class="prob-header">
+                  <span>Default Probability</span>
+                  <span class="prob-number" id="prob-number">18.4%</span>
+                </div>
+                <div class="progress-bar-wrap">
+                  <div class="progress-bar-fill" id="prob-bar-fill" style="width: 18.4%;"></div>
+                </div>
+                <div class="prob-meta">
+                  <span>Safe Threshold (< 35%)</span>
+                  <span>Review (35-60%)</span>
+                  <span>High Risk (> 60%)</span>
+                </div>
+              </div>
+
+              <!-- Financial Breakdown -->
+              <div class="financial-box">
+                <h4><i class="fa-solid fa-receipt"></i> Estimated Loan Repayment</h4>
+                <div class="financial-grid">
+                  <div class="fin-item">
+                    <span class="fin-label">Monthly EMI</span>
+                    <span class="fin-val text-primary" id="fin-emi">$3,998</span>
+                  </div>
+                  <div class="fin-item">
+                    <span class="fin-label">Total Payment</span>
+                    <span class="fin-val" id="fin-total">$143,928</span>
+                  </div>
+                  <div class="fin-item">
+                    <span class="fin-label">Total Interest</span>
+                    <span class="fin-val" id="fin-interest">$23,928</span>
+                  </div>
+                  <div class="fin-item">
+                    <span class="fin-label">Monthly Burden</span>
+                    <span class="fin-val" id="fin-burden">58.1% of Income</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Risk Drivers / Key Factors -->
+              <div class="factors-section">
+                <h4><i class="fa-solid fa-magnifying-glass-chart"></i> Key Contributing Factors</h4>
+                <ul class="factors-list" id="factors-list">
+                  <!-- Injected via JS -->
+                </ul>
+              </div>
+
+              <!-- Inference Engine Footer -->
+              <div class="engine-badge">
+                <i class="fa-solid fa-microchip"></i>
+                <span id="inference-engine-text">HistGradientBoostingClassifier Pipeline</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: DATA INSIGHTS & EDA -->
+    <section class="tab-pane" id="tab-eda">
+      <div class="tab-header">
+        <h2><i class="fa-solid fa-chart-pie"></i> Exploratory Data Analysis & Insights</h2>
+        <p>Comprehensive overview of the 255,347 loan records from the Kaggle Loan Default Dataset.</p>
+      </div>
+
+      <!-- EDA Summary Cards -->
+      <div class="eda-stats-grid">
+        <div class="card stat-card">
+          <div class="stat-icon-wrap bg-blue"><i class="fa-solid fa-database"></i></div>
+          <div>
+            <span class="stat-num">255,347</span>
+            <span class="stat-title">Total Records</span>
+          </div>
+        </div>
+        <div class="card stat-card">
+          <div class="stat-icon-wrap bg-green"><i class="fa-solid fa-list-check"></i></div>
+          <div>
+            <span class="stat-num">16</span>
+            <span class="stat-title">Input Features</span>
+          </div>
+        </div>
+        <div class="card stat-card">
+          <div class="stat-icon-wrap bg-amber"><i class="fa-solid fa-percent"></i></div>
+          <div>
+            <span class="stat-num">11.61%</span>
+            <span class="stat-title">Default Rate</span>
+          </div>
+        </div>
+        <div class="card stat-card">
+          <div class="stat-icon-wrap bg-purple"><i class="fa-solid fa-broom"></i></div>
+          <div>
+            <span class="stat-num">0</span>
+            <span class="stat-title">Missing / Null Values</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- EDA Deep-Dive Sections -->
+      <div class="eda-content-grid">
+        <!-- Target Distribution -->
+        <div class="card eda-card">
+          <h3><i class="fa-solid fa-chart-simple"></i> Target Distribution (Class Balance)</h3>
+          <p class="section-desc">Analysis of default vs. non-default cases in the dataset.</p>
+          <div class="class-distribution-box">
+            <div class="dist-row">
+              <div class="dist-label-col">
+                <strong>Non-Default (Class 0)</strong>
+                <span class="text-muted">225,694 borrowers (88.39%)</span>
+              </div>
+              <div class="dist-bar-col">
+                <div class="dist-bar bg-success" style="width: 88.4%;">88.4%</div>
+              </div>
+            </div>
+            <div class="dist-row">
+              <div class="dist-label-col">
+                <strong>Default (Class 1)</strong>
+                <span class="text-muted">29,653 borrowers (11.61%)</span>
+              </div>
+              <div class="dist-bar-col">
+                <div class="dist-bar bg-danger" style="width: 11.6%;">11.6%</div>
+              </div>
+            </div>
+          </div>
+          <div class="info-callout">
+            <i class="fa-solid fa-info-circle"></i>
+            <span><strong>Handling Imbalance:</strong> The dataset exhibits an 8:1 class ratio. The model uses balanced class weighting to ensure high sensitivity (68.2% recall) on actual defaulters.</span>
+          </div>
+        </div>
+
+        <!-- Key Feature Ranges Table -->
+        <div class="card eda-card">
+          <h3><i class="fa-solid fa-table-cells"></i> Feature Ranges & Statistics</h3>
+          <p class="section-desc">Key numerical statistics across all 255k records.</p>
+          <div class="table-responsive">
+            <table class="eda-table">
+              <thead>
+                <tr>
+                  <th>Feature</th>
+                  <th>Min</th>
+                  <th>Mean</th>
+                  <th>Median</th>
+                  <th>Max</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Age</strong></td>
+                  <td>18 yrs</td>
+                  <td>43.5 yrs</td>
+                  <td>43.0 yrs</td>
+                  <td>69 yrs</td>
+                </tr>
+                <tr>
+                  <td><strong>Income</strong></td>
+                  <td>$15,000</td>
+                  <td>$82,499</td>
+                  <td>$82,466</td>
+                  <td>$149,999</td>
+                </tr>
+                <tr>
+                  <td><strong>Loan Amount</strong></td>
+                  <td>$5,000</td>
+                  <td>$127,578</td>
+                  <td>$127,556</td>
+                  <td>$249,999</td>
+                </tr>
+                <tr>
+                  <td><strong>Credit Score</strong></td>
+                  <td>300</td>
+                  <td>574</td>
+                  <td>574</td>
+                  <td>849</td>
+                </tr>
+                <tr>
+                  <td><strong>Months Employed</strong></td>
+                  <td>0 mos</td>
+                  <td>59.5 mos</td>
+                  <td>60.0 mos</td>
+                  <td>119 mos</td>
+                </tr>
+                <tr>
+                  <td><strong>Interest Rate</strong></td>
+                  <td>2.00%</td>
+                  <td>13.49%</td>
+                  <td>13.46%</td>
+                  <td>25.00%</td>
+                </tr>
+                <tr>
+                  <td><strong>DTI Ratio</strong></td>
+                  <td>0.10</td>
+                  <td>0.50</td>
+                  <td>0.50</td>
+                  <td>0.90</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-container">
+      <p>Loan Predictor • Machine Learning Risk System • Computer Engineering Department</p>
+      <p class="footer-sub">Trained on Loan_default.csv (255,347 records). All predictions are probabilistic estimates for educational demonstration.</p>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
